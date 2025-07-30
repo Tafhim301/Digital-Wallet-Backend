@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+
 
 export enum Role {
   USER = "USER",
@@ -18,13 +18,12 @@ export enum ApprovalStatus {
 }
 
 export interface IUser {
+  _id ?: string
   name: string;
-  phone: number;
-  password : string;
-  Role?: Role;
-  isActive ?: isActive;
+  phone: string;
+  password: string;
+  role?: Role;
+  isActive?: isActive;
   isDeleted?: boolean;
-  ApprovalStatus : ApprovalStatus
-  Wallet : Types.ObjectId
-  Transaction : Types.ObjectId
+
 }

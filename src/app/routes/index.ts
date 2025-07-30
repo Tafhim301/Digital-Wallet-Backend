@@ -7,6 +7,10 @@ const moduleRoutes = [
     {
        path : '/user',
        route : userRoutes
+    },
+    {
+       path : '/auth',
+       route : userRoutes
     }
     
 ];

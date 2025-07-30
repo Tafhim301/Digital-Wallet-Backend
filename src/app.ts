@@ -2,10 +2,14 @@ import express, { Request, Response } from 'express'
 import cors from "cors"
 import { router } from './app/routes';
 import { globalErrorHandler } from './app/errorHandlers/globalErrorHandler';
+import notFound from './app/middlewares/notFound';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
 app.use(express.json());
+
+app.use(cookieParser());
 
 app.use(cors())
 
@@ -16,6 +20,8 @@ app.get("/", (req: Request, res: Response) => {
     message: "Welcome to Digital Wallet Backend",
   });
 });
+
+app.use(notFound)
 
 app.use(globalErrorHandler);
 

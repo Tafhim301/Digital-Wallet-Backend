@@ -3,7 +3,10 @@
 import { NextFunction, Request, Response } from "express";
 import AppError from "./appError";
 import { envVars } from "../config/env";
-
+import { handleDuplicateError } from "./handleDuplicateError";
+import { handleCastError } from "./handleCastError";
+import { handleZodError } from "./handleZodError";
+import { handleValidationError } from "./handleValidationError";
 
 export const globalErrorHandler = (
   err: any,
@@ -11,40 +14,28 @@ export const globalErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  const errorSources: any = [];
+  let errorSources: any = [];
   let statusCode = 500;
   let message = `Something Went Wrong!! ${err.message}`;
+
   if (err.code === 11000) {
-    const duplicate = err.message.match(/"([^"]*)"/);
-    message = `${duplicate[1]} Error Occured`;
-    statusCode = 400;
+    const simplifiedError = handleDuplicateError(err);
+    message = simplifiedError.message;
+    statusCode = simplifiedError.statusCode;
   } else if (err.name === "CastError") {
-    statusCode = 400;
-    message = "Invalid MongoDB ObjectID PLEASE PROVIDE A VALID Id";
-  } else if(err.name === "ZodError"){
-    statusCode = 400;
-    message = "Zod Error"
-    err.issues.forEach((issue : any) => {
-        errorSources.push({
-            path: issue.path[issue.path.length - 1],
-            message : issue.message
-        })
-
-    })
-
+    const simplifiedError = handleCastError(err);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+  } else if (err.name === "ZodError") {
+    const simplifiedError = handleZodError(err);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+    errorSources = simplifiedError.errorSources;
   } else if (err.name === "ValidationError") {
-    statusCode = 400;
-    message = "Validation Error"
-    const errors = Object.values(err.errors);
-
-    errors.forEach((errorObject: any) => {
-      errorSources.push({
-        path: errorObject.path,
-        message: errorObject.message,
-      });
-
-    });
-    message = "Validation Error Occured";
+    const simplifiedError = handleValidationError(err);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+    errorSources = simplifiedError.errorSources;
   } else if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
@@ -56,7 +47,7 @@ export const globalErrorHandler = (
     success: false,
     message: message,
     errorSources,
-    err,
+    err : envVars.NODE_ENV === "development" ? err : null,
     stack: envVars.NODE_ENV === "development" ? err.stack : null,
   });
 };
