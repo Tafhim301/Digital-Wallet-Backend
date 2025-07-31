@@ -38,7 +38,20 @@ const approveAgent = catchAsync(
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.OK,
-      message: "Agent Applications retrieved successfully",
+      message: "Agent Application approved successfully",
+      data: result
+      
+    });
+  }
+);
+
+const suspendAgent = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await agentServices.suspendAgent(req.params.id);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Agent suspended successfully",
       data: result
       
     });
@@ -52,7 +65,7 @@ const getAllAgents = catchAsync(
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.OK,
-      message: "Agent Applications retrieved successfully",
+      message: "All Agents retrieved successfully",
       data: result
       
     });
@@ -66,5 +79,6 @@ export const agentController = {
     agentApplication,
     getAgentApplications,
     approveAgent,
-    getAllAgents
+    getAllAgents,
+    suspendAgent
 }

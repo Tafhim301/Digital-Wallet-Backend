@@ -51,7 +51,7 @@ const getAgentApplications = async(query : Record<string,string>) => {
 
 }
 const getAllAgents = async(query : Record<string,string>) => {
-  const queryBuilder = new QueryBuilder(User.find({approvalStatus : Role.AGENT}), query);
+  const queryBuilder = new QueryBuilder(User.find({role : Role.AGENT}), query);
   
     const users = await queryBuilder
       .search(agentSearchableFields)
@@ -75,11 +75,26 @@ const getAllAgents = async(query : Record<string,string>) => {
 
 const approveAgent = async(id : string) => {
     const approvedAgent = await User.findByIdAndUpdate(id, {
+        role : Role.AGENT,
         approvalStatus :  ApprovalStatus.APPROVED,
         isAgent : true
     }, {new : true})
 
     return {
+    role : approvedAgent?.role,
+    ApprovalStatus : approvedAgent?.approvalStatus,
+    isAgent : approvedAgent?.isAgent
+}
+}
+const suspendAgent = async(id : string) => {
+    const approvedAgent = await User.findByIdAndUpdate(id, {
+        role : Role.USER,
+        approvalStatus :  ApprovalStatus.SUSPENDED,
+        isAgent : false
+    }, {new : true})
+
+    return {
+    role : approvedAgent?.role,
     ApprovalStatus : approvedAgent?.approvalStatus,
     isAgent : approvedAgent?.isAgent
 }
@@ -92,5 +107,6 @@ export const agentServices = {
     agentApplication,
     getAgentApplications,
     approveAgent,
-    getAllAgents
+    getAllAgents,
+    suspendAgent
 }

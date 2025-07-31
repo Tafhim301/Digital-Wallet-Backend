@@ -10,27 +10,31 @@ import httpStatus from "http-status-codes";
 
 const createUser = async (payload: Partial<IUser>) => {
   const { name, phone, password, ...rest } = payload;
+
   const doesUserExist = await User.findOne({ phone });
   if (doesUserExist) {
-    throw new AppError(httpStatus.BAD_REQUEST, "User Already Exists");
+    throw new AppError(httpStatus.BAD_REQUEST, "User already exists");
   }
+
   const hashedPassword = await bcryptjs.hash(
     password as string,
     Number(envVars.BCRYPT_SALT_ROUND)
   );
 
+  
   const user = await User.create({
-    name: name,
-    phone: phone,
+    name,
+    phone,
     password: hashedPassword,
-    rest,
+    ...rest, 
   });
 
   const wallet = await Wallet.create({
     user: user._id,
   });
 
-  await User.findByIdAndUpdate(user?._id, { wallet: wallet._id });
+  user.wallet = wallet._id;
+  await user.save(); 
 
   return { user, wallet };
 };
