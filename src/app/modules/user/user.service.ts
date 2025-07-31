@@ -1,6 +1,8 @@
 import { envVars } from "../../config/env";
 import AppError from "../../errorHandlers/appError";
+import { QueryBuilder } from "../../utils/queryBuilder";
 import { Wallet } from "../wallet/wallet.model";
+import { userSearchableFields } from "./user.constant";
 import { IUser } from "./user.interface";
 import { User } from "./user.model";
 import bcryptjs from "bcryptjs";
@@ -33,8 +35,29 @@ const createUser = async (payload: Partial<IUser>) => {
   return { user, wallet };
 };
 
+
+
+const getAllUsers = async (query: Record<string, string>) => {
+  const queryBuilder = new QueryBuilder(User.find(), query);
+
+  const users = await queryBuilder
+    .search(userSearchableFields)
+    .filter()
+    .fields()
+    .sort()
+    .paginate();
+
+  const [data, meta] = await Promise.all([
+    users.build(),
+    queryBuilder.getMeta(),
+  ]);
+
+  return { meta: meta, data: data };
+};
+
 export const userServices = {
   createUser,
+  getAllUsers
 }
 
 

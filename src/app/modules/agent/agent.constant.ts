@@ -1,0 +1,1 @@
+export const agentSearchableFields = ['name', 'phone' , 'role']
