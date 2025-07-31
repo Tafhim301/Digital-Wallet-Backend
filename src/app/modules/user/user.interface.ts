@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 
 
 export enum Role {
@@ -12,9 +13,10 @@ export enum isActive {
   BLOCKED = "BLOCKED",
 }
 export enum ApprovalStatus {
+  UNAPPLIED = "UNAPPLIED",
   PENDING = "PENDING",
   APPROVED = "APPROVED",
-  SUSOENDED = "SUSPENDED",
+  SUSPENDED = "SUSPENDED",
 }
 
 export interface IUser {
@@ -25,5 +27,8 @@ export interface IUser {
   role?: Role;
   isActive?: isActive;
   isDeleted?: boolean;
+  isAgent ?: boolean;
+  approvalStatus ?: ApprovalStatus
+  wallet ?: Types.ObjectId
 
 }

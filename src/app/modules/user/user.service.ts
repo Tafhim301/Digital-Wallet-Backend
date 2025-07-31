@@ -1,10 +1,10 @@
 import { envVars } from "../../config/env";
 import AppError from "../../errorHandlers/appError";
+import { Wallet } from "../wallet/wallet.model";
 import { IUser } from "./user.interface";
 import { User } from "./user.model";
 import bcryptjs from "bcryptjs";
 import httpStatus from "http-status-codes";
-
 
 const createUser = async (payload: Partial<IUser>) => {
   const { name, phone, password, ...rest } = payload;
@@ -23,9 +23,19 @@ const createUser = async (payload: Partial<IUser>) => {
     password: hashedPassword,
     rest,
   });
-  return user;
+
+  const wallet = await Wallet.create({
+    user: user._id,
+  });
+
+  await User.findByIdAndUpdate(user?._id, { wallet: wallet._id });
+
+  return { user, wallet };
 };
 
 export const userServices = {
   createUser,
-};
+}
+
+
+
