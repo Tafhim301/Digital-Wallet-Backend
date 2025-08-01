@@ -4,109 +4,182 @@ import httpStatus from "http-status-codes";
 import { User } from "../user/user.model";
 import { QueryBuilder } from "../../utils/queryBuilder";
 import { agentSearchableFields } from "./agent.constant";
+import { ITransaction, TransactionType } from "../transaction/transaction.interface";
+import { Wallet } from "../wallet/wallet.model";
+import { isWalletBlocked } from "../../utils/checkTransactionValidity";
+import mongoose from "mongoose";
+import { Transaction } from "../transaction/transaction.model";
 
-const agentApplication = async(payload : Partial<IUser>) => {
-    const {phone} = payload;
-    if(!phone){
-        throw new AppError(httpStatus.BAD_REQUEST, "Phone number is required for agent application")
-    }
+const agentApplication = async (payload: Partial<IUser>) => {
+  const { phone } = payload;
+  if (!phone) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Phone number is required for agent application"
+    );
+  }
 
-    const user = await User.findOne({phone});
-    if(!user){
-        throw new AppError(httpStatus.BAD_REQUEST, "User Does Not Exist. You Must Register As An User To Apply For Agent")
+  const user = await User.findOne({ phone });
+  if (!user) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "User Does Not Exist. You Must Register As An User To Apply For Agent"
+    );
+  }
 
-    }
+  const agent = await User.findByIdAndUpdate(
+    user?._id,
+    {
+      approvalStatus: ApprovalStatus.PENDING,
+    },
+    { new: true }
+  );
 
-    const agent = await User.findByIdAndUpdate(user?._id,{
-        approvalStatus : ApprovalStatus.PENDING
-},{new : true})
+  return {
+    approvalStatus: agent?.approvalStatus,
+  };
+};
+const getAgentApplications = async (query: Record<string, string>) => {
+  const queryBuilder = new QueryBuilder(
+    User.find({ approvalStatus: ApprovalStatus.PENDING }),
+    query
+  );
+
+  const users = await queryBuilder
+    .search(agentSearchableFields)
+    .filter()
+    .fields()
+    .sort()
+    .paginate();
+
+  const [data, meta] = await Promise.all([
+    users.build(),
+    queryBuilder.getMeta(),
+  ]);
+
+  return { meta: meta, data: data };
+};
+const getAllAgents = async (query: Record<string, string>) => {
+  const queryBuilder = new QueryBuilder(User.find({ role: Role.AGENT }), query);
+
+  const users = await queryBuilder
+    .search(agentSearchableFields)
+    .filter()
+    .fields()
+    .sort()
+    .paginate();
+
+  const [data, meta] = await Promise.all([
+    users.build(),
+    queryBuilder.getMeta(),
+  ]);
+
+  return { meta: meta, data: data };
+};
+
+const approveAgent = async (id: string) => {
+  const approvedAgent = await User.findByIdAndUpdate(
+    id,
+    {
+      role: Role.AGENT,
+      approvalStatus: ApprovalStatus.APPROVED,
+      isAgent: true,
+    },
+    { new: true }
+  );
+
+  return {
+    role: approvedAgent?.role,
+    ApprovalStatus: approvedAgent?.approvalStatus,
+    isAgent: approvedAgent?.isAgent,
+  };
+};
+const suspendAgent = async (id: string) => {
+  const suspendedAgent = await User.findByIdAndUpdate(
+    id,
+    {
+      role: Role.USER,
+      approvalStatus: ApprovalStatus.SUSPENDED,
+      isAgent: false,
+    },
+    { new: true }
+  );
+
+  return {
+    role: suspendedAgent?.role,
+    ApprovalStatus: suspendedAgent?.approvalStatus,
+    isAgent: suspendedAgent?.isAgent,
+  };
+};
+const cashInAgent = async (agentId: string, payload: Partial<ITransaction>) => {
+  const { amount } = payload;
 
 
-return {
-   approvalStatus : agent?.approvalStatus
-}
+  if (!amount) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Amount is required");
+  }
+
+  if (typeof amount !== "number" || amount <= 0) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Amount must be a positive number");
+  }
 
 
+  const agent = await User.findById(agentId);
+  if (!agent) {
+    throw new AppError(httpStatus.NOT_FOUND, "Agent not found");
+  }
 
-}
-const getAgentApplications = async(query : Record<string,string>) => {
-  const queryBuilder = new QueryBuilder(User.find({approvalStatus : ApprovalStatus.PENDING}), query);
-  
-    const users = await queryBuilder
-      .search(agentSearchableFields)
-      .filter()
-      .fields()
-      .sort()
-      .paginate();
-  
-    const [data, meta] = await Promise.all([
-      users.build(),
-      queryBuilder.getMeta(),
-    ]);
-  
-    return { meta: meta, data: data };
+  if (agent.role !== Role.AGENT) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Target user is not an agent");
+  }
+
+  await isWalletBlocked(agent._id, "Agent");
+
+ 
+  const agentWallet = await Wallet.findById(agent.wallet);
+  if (!agentWallet) {
+    throw new AppError(httpStatus.NOT_FOUND, "Agent wallet not found");
+  }
 
 
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
 
 
-}
-const getAllAgents = async(query : Record<string,string>) => {
-  const queryBuilder = new QueryBuilder(User.find({role : Role.AGENT}), query);
-  
-    const users = await queryBuilder
-      .search(agentSearchableFields)
-      .filter()
-      .fields()
-      .sort()
-      .paginate();
-  
-    const [data, meta] = await Promise.all([
-      users.build(),
-      queryBuilder.getMeta(),
-    ]);
-  
-    return { meta: meta, data: data };
+    agentWallet.balance += amount;
+    await agentWallet.save({ session });
 
+    await Transaction.create(
+      [
+        {
+          sender : "688a43cab99b963182ea5090",
+          receiever : agent._id,
+          amount : amount,
+          transactionType : TransactionType.ADMIN_CASH_IN
 
+        },
+      ],
+      { session }
+    );
 
+    await session.commitTransaction();
+    session.endSession();
 
-}
-
-
-const approveAgent = async(id : string) => {
-    const approvedAgent = await User.findByIdAndUpdate(id, {
-        role : Role.AGENT,
-        approvalStatus :  ApprovalStatus.APPROVED,
-        isAgent : true
-    }, {new : true})
-
-    return {
-    role : approvedAgent?.role,
-    ApprovalStatus : approvedAgent?.approvalStatus,
-    isAgent : approvedAgent?.isAgent
-}
-}
-const suspendAgent = async(id : string) => {
-    const approvedAgent = await User.findByIdAndUpdate(id, {
-        role : Role.USER,
-        approvalStatus :  ApprovalStatus.SUSPENDED,
-        isAgent : false
-    }, {new : true})
-
-    return {
-    role : approvedAgent?.role,
-    ApprovalStatus : approvedAgent?.approvalStatus,
-    isAgent : approvedAgent?.isAgent
-}
-}
-
-
+    return { message: "Cash-in to agent successful" };
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
+};
 
 
 export const agentServices = {
-    agentApplication,
-    getAgentApplications,
-    approveAgent,
-    getAllAgents,
-    suspendAgent
-}
+  agentApplication,
+  getAgentApplications,
+  approveAgent,
+  getAllAgents,
+  suspendAgent,
+  cashInAgent
+};

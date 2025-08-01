@@ -71,6 +71,19 @@ const getAllAgents = catchAsync(
     });
   }
 );
+const CashInAgent = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+ 
+    const result = await agentServices.cashInAgent(req.params.id,req.body);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Cash In to agent successfull",
+      data: result
+      
+    });
+  }
+);
 
 
 
@@ -80,5 +93,6 @@ export const agentController = {
     getAgentApplications,
     approveAgent,
     getAllAgents,
-    suspendAgent
+    suspendAgent,
+    CashInAgent
 }

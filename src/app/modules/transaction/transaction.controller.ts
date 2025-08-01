@@ -18,8 +18,36 @@ const sendMoney = catchAsync(
     });
   }
 );
+const cashIn = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userToken = req.user
+    const result = await transactionServices.cashIn(userToken,req.body);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Cash-In successfull",
+      data: result
+      
+    });
+  }
+);
+const cashout = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userToken = req.user
+    const result = await transactionServices.cashOut(userToken,req.body);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Cash-out successfull",
+      data: result
+      
+    });
+  }
+);
 
 
 export const transactionController = {
-    sendMoney
+    sendMoney,
+    cashIn,
+    cashout
 }
