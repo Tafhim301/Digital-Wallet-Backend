@@ -6,6 +6,8 @@ import { Transaction } from "./transaction.model";
 import { Wallet } from "../wallet/wallet.model";
 import { isWalletBlocked } from "../../utils/checkTransactionValidity";
 import { Role } from "../user/user.interface";
+import { QueryBuilder } from "../../utils/queryBuilder";
+
 
 const sendMoney = async (
   userToken: JwtPayload,
@@ -178,8 +180,28 @@ const cashOut = async (
   return transaction;
 };
 
+const getAllTransactions = async (query : Record<string,string>) => {
+  const queryBuilder = new QueryBuilder(Transaction.find(), query);
+  
+    const users = await queryBuilder
+     
+      .filter()
+      .fields()
+      .sort()
+      .paginate();
+  
+    const [data, meta] = await Promise.all([
+      users.build(),
+      queryBuilder.getMeta(),
+    ]);
+  
+    return { meta: meta, data: data };
+
+};
+
 export const transactionServices = {
   sendMoney,
   cashIn,
   cashOut,
+  getAllTransactions
 };

@@ -10,6 +10,7 @@ const router = Router()
 router.post('/send-money',checkAuth(Role.USER),validateRequest(createTransactionSchema),transactionController.sendMoney)
 router.post('/cash-in',checkAuth(Role.AGENT),validateRequest(createTransactionSchema),transactionController.cashIn)
 router.post('/cash-out',checkAuth(Role.USER),validateRequest(createTransactionSchema),transactionController.cashout)
+router.get('/all-transactions',checkAuth(Role.ADMIN),transactionController.getAllUser)
 
 
 
