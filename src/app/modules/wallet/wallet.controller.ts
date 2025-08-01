@@ -26,7 +26,7 @@ const blockWallet = catchAsync(
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.OK,
-      message: "All Wallets retrieved successfully",
+      message: "Wallet is blocked successfully",
       data: result,
     });
   }
