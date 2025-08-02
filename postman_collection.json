@@ -1,0 +1,653 @@
+{
+	"info": {
+		"_postman_id": "7065998f-0cbb-493e-9679-01ac9212f9f3",
+		"name": "DIGITAL_WALLET_BACKEND_API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46623385",
+		"_collection_link": "https://digital-wallet-7013.postman.co/workspace/Digital-Wallet-Workspace~ea69d8f2-84a3-49c4-8e3c-8b442f7b2c13/collection/46623385-7065998f-0cbb-493e-9679-01ac9212f9f3?action=share&source=collection_link&creator=46623385"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Register-User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"name\" : \"John Doe\",\r\n   \"phone\" : \"01611111112\",\r\n   \"password\" : \"@Tafi01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://digital-wallet-backend-phi.vercel.app/api/v1/user/register",
+							"protocol": "https",
+							"host": [
+								"digital-wallet-backend-phi",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get-All-Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODhhNDNjYWI5OWI5NjMxODJlYTUwOTAiLCJwaG9uZSI6ImFkbWluTnVtYmVyIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzU0MDUyNzAwLCJleHAiOjE3NTQxMzkxMDB9.OsvWIzpBpJSnmt3JcdJuz5QMTDYxTzdUptHQkUo3sng",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://digital-wallet-backend-phi.vercel.app/api/v1/user/all-users",
+							"protocol": "https",
+							"host": [
+								"digital-wallet-backend-phi",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"all-users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phone\": \"01611111111\",\r\n    \"password\": \"@Tafi01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://digital-wallet-backend-phi.vercel.app/api/v1/auth/login",
+							"protocol": "https",
+							"host": [
+								"digital-wallet-backend-phi",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Log-out",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://digital-wallet-backend-phi.vercel.app/api/v1/auth/logout",
+							"protocol": "https",
+							"host": [
+								"digital-wallet-backend-phi",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Agent",
+			"item": [
+				{
+					"name": "Post-Agent-Application",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODhlMDk5OTkwNTEyODg3MDRmMzQ2MjYiLCJwaG9uZSI6IjAxNjExMTExMTExIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NTQxMzkxMTEsImV4cCI6MTc1NDIyNTUxMX0.5Yl8RpgVg9_dBVOVME9IDNauvW6kF3oinfgduBJQ6aw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phone\" : \"01820525488\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://digital-wallet-backend-phi.vercel.app/api/v1/agent/agent-application",
+							"protocol": "https",
+							"host": [
+								"digital-wallet-backend-phi",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"agent",
+								"agent-application"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get-Agent-Applications",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODhhNDNjYWI5OWI5NjMxODJlYTUwOTAiLCJwaG9uZSI6ImFkbWluTnVtYmVyIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzU0MTQwNzYzLCJleHAiOjE3NTUwMDQ3NjN9.icfxhUwCQk-W181hlM62RDoAUzzSahzBlkwTSVgwgGs",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://digital-wallet-backend-phi.vercel.app/api/v1/agent/agent-applications",
+							"protocol": "https",
+							"host": [
+								"digital-wallet-backend-phi",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"agent",
+								"agent-applications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get-All-Agent",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODhhNDNjYWI5OWI5NjMxODJlYTUwOTAiLCJwaG9uZSI6ImFkbWluTnVtYmVyIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzU0MTQwNzYzLCJleHAiOjE3NTUwMDQ3NjN9.icfxhUwCQk-W181hlM62RDoAUzzSahzBlkwTSVgwgGs",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://digital-wallet-backend-phi.vercel.app/api/v1/agent/all-agents",
+							"protocol": "https",
+							"host": [
+								"digital-wallet-backend-phi",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"agent",
+								"all-agents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve-Agent",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODhhNDNjYWI5OWI5NjMxODJlYTUwOTAiLCJwaG9uZSI6ImFkbWluTnVtYmVyIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzU0MTQwNzYzLCJleHAiOjE3NTUwMDQ3NjN9.icfxhUwCQk-W181hlM62RDoAUzzSahzBlkwTSVgwgGs",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://digital-wallet-backend-phi.vercel.app/api/v1/agent/approve-agent/688bae8a4e66823c3b82d144",
+							"protocol": "https",
+							"host": [
+								"digital-wallet-backend-phi",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"agent",
+								"approve-agent",
+								"688bae8a4e66823c3b82d144"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Suspend-Agent",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODhhNDNjYWI5OWI5NjMxODJlYTUwOTAiLCJwaG9uZSI6ImFkbWluTnVtYmVyIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzU0MTQwNzYzLCJleHAiOjE3NTUwMDQ3NjN9.icfxhUwCQk-W181hlM62RDoAUzzSahzBlkwTSVgwgGs",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://digital-wallet-backend-phi.vercel.app/api/v1/agent/suspend-agent/688af53f87e600a14df2806e",
+							"protocol": "https",
+							"host": [
+								"digital-wallet-backend-phi",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"agent",
+								"suspend-agent",
+								"688af53f87e600a14df2806e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Agent-cash-in",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODhhNDNjYWI5OWI5NjMxODJlYTUwOTAiLCJwaG9uZSI6ImFkbWluTnVtYmVyIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzU0MTQwNzYzLCJleHAiOjE3NTUwMDQ3NjN9.icfxhUwCQk-W181hlM62RDoAUzzSahzBlkwTSVgwgGs",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"amount\" : 10000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://digital-wallet-backend-phi.vercel.app/api/v1/agent/cash-in-agent/688bae8a4e66823c3b82d144",
+							"protocol": "https",
+							"host": [
+								"digital-wallet-backend-phi",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"agent",
+								"cash-in-agent",
+								"688bae8a4e66823c3b82d144"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Wallet",
+			"item": [
+				{
+					"name": "Get-All-Wallets",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODhhNDNjYWI5OWI5NjMxODJlYTUwOTAiLCJwaG9uZSI6ImFkbWluTnVtYmVyIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzU0MTQwNzYzLCJleHAiOjE3NTUwMDQ3NjN9.icfxhUwCQk-W181hlM62RDoAUzzSahzBlkwTSVgwgGs",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://digital-wallet-backend-phi.vercel.app/api/v1/wallet/",
+							"protocol": "https",
+							"host": [
+								"digital-wallet-backend-phi",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"wallet",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Block-Wallet",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODhhNDNjYWI5OWI5NjMxODJlYTUwOTAiLCJwaG9uZSI6ImFkbWluTnVtYmVyIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzU0MTQwNzYzLCJleHAiOjE3NTUwMDQ3NjN9.icfxhUwCQk-W181hlM62RDoAUzzSahzBlkwTSVgwgGs",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://digital-wallet-backend-phi.vercel.app/api/v1/wallet/block-wallet/688af53f87e600a14df28070",
+							"protocol": "https",
+							"host": [
+								"digital-wallet-backend-phi",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"wallet",
+								"block-wallet",
+								"688af53f87e600a14df28070"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transaction",
+			"item": [
+				{
+					"name": "Send-Money",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODhlMDk5OTkwNTEyODg3MDRmMzQ2MjYiLCJwaG9uZSI6IjAxNjExMTExMTExIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NTQxMzkxMTEsImV4cCI6MTc1NDIyNTUxMX0.5Yl8RpgVg9_dBVOVME9IDNauvW6kF3oinfgduBJQ6aw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"receiver\" : \"01820525488\",\r\n    \"amount\" : 20\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://digital-wallet-backend-phi.vercel.app/api/v1/transaction/send-money",
+							"protocol": "https",
+							"host": [
+								"digital-wallet-backend-phi",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transaction",
+								"send-money"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cash-In",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODhhZjUzZjg3ZTYwMGExNGRmMjgwNmUiLCJwaG9uZSI6IjAxNjE5OTExNDcyIiwicm9sZSI6IkFHRU5UIiwiaWF0IjoxNzU0MDI1ODk5LCJleHAiOjE3NTQxMTIyOTl9.FvyinL5x9_QOaORKOePsJ_MDpRMzBBnJz9cZMwSsRig",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"receiever\" : \"01687678990\",\r\n    \"amount\" : 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/transaction/cash-in",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"transaction",
+								"cash-in"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cash-Out",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODhlMDk5OTkwNTEyODg3MDRmMzQ2MjYiLCJwaG9uZSI6IjAxNjExMTExMTExIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NTQxMzkxMTEsImV4cCI6MTc1NDIyNTUxMX0.5Yl8RpgVg9_dBVOVME9IDNauvW6kF3oinfgduBJQ6aw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"receiver\" : \"01619911472\",\r\n    \"amount\" : 30\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://digital-wallet-backend-phi.vercel.app/api/v1/transaction/cash-out",
+							"protocol": "https",
+							"host": [
+								"digital-wallet-backend-phi",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transaction",
+								"cash-out"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get-All-Transaction",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODhhNDNjYWI5OWI5NjMxODJlYTUwOTAiLCJwaG9uZSI6ImFkbWluTnVtYmVyIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzU0MTQwNzYzLCJleHAiOjE3NTUwMDQ3NjN9.icfxhUwCQk-W181hlM62RDoAUzzSahzBlkwTSVgwgGs",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://digital-wallet-backend-phi.vercel.app/api/v1/transaction/all-transactions",
+							"protocol": "https",
+							"host": [
+								"digital-wallet-backend-phi",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transaction",
+								"all-transactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get-Own-Transactions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODhlMDk5OTkwNTEyODg3MDRmMzQ2MjYiLCJwaG9uZSI6IjAxNjExMTExMTExIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NTQxMzkxMTEsImV4cCI6MTc1NDIyNTUxMX0.5Yl8RpgVg9_dBVOVME9IDNauvW6kF3oinfgduBJQ6aw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://digital-wallet-backend-phi.vercel.app/api/v1/transaction/own-transactions",
+							"protocol": "https",
+							"host": [
+								"digital-wallet-backend-phi",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transaction",
+								"own-transactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Top-Up",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODhlMDk5OTkwNTEyODg3MDRmMzQ2MjYiLCJwaG9uZSI6IjAxNjExMTExMTExIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NTQxMzkxMTEsImV4cCI6MTc1NDIyNTUxMX0.5Yl8RpgVg9_dBVOVME9IDNauvW6kF3oinfgduBJQ6aw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"amount\" : 100\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://digital-wallet-backend-phi.vercel.app/api/v1/transaction/top-up",
+							"protocol": "https",
+							"host": [
+								"digital-wallet-backend-phi",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transaction",
+								"top-up"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Withdraw-Money",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODhlMDk5OTkwNTEyODg3MDRmMzQ2MjYiLCJwaG9uZSI6IjAxNjExMTExMTExIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NTQxMzkxMTEsImV4cCI6MTc1NDIyNTUxMX0.5Yl8RpgVg9_dBVOVME9IDNauvW6kF3oinfgduBJQ6aw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"amount\" : 100\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://digital-wallet-backend-phi.vercel.app/api/v1/transaction/withdraw-money",
+							"protocol": "https",
+							"host": [
+								"digital-wallet-backend-phi",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transaction",
+								"withdraw-money"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

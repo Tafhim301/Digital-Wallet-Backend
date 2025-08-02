@@ -202,6 +202,7 @@ src/
 
 A Postman collection with documented requests for all API endpoints is available for testing. You can import the collection to easily test the API's functionality.
 
+
 ## Video Demonstration
 
 A screen-recorded video demonstration (max 10 minutes) showcasing the project's features and functionality is available here. The video covers:
