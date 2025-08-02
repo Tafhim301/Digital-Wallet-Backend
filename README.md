@@ -124,8 +124,8 @@ To run this project locally, follow these steps:
 1.  **Clone the repository:**
 
     ```bash
-    git clone <repository_url>
-    cd <project_folder>
+    git clone https://github.com/Tafhim301/Digital-Wallet-Backend
+    cd Digital-Wallet-Backend
     ```
 
 2.  **Install dependencies:**
@@ -200,12 +200,14 @@ src/
 
 ## Postman Collection
 
-A Postman collection with documented requests for all API endpoints is available for testing. You can import the collection to easily test the API's functionality.
+A Postman collection with documented requests for all API endpoints is available for testing. You can import the collection to easily test the API's functionality.Check out postman.json
 
 
 ## Video Demonstration
 
-A screen-recorded video demonstration (max 10 minutes) showcasing the project's features and functionality is available here. The video covers:
+
+
+A screen-recorded video demonstration showcasing the project's features and functionality is available here. The video covers: ([Video-Link](https://www.youtube.com/watch?v=mvLonF6v4lQ&t=23s))
 - A brief introduction and project overview.
 - An explanation of the folder structure.
 - The authentication and authorization flow (register, login, JWT).
