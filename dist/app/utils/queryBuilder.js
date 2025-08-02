@@ -1,0 +1,77 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.QueryBuilder = void 0;
+const globalConstants_1 = require("../globalConstants");
+class QueryBuilder {
+    constructor(modelQuery, query) {
+        this.modelQuery = modelQuery;
+        this.query = query;
+    }
+    filter() {
+        const filter = Object.assign({}, this.query);
+        for (const field of globalConstants_1.excludedField) {
+            // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+            delete filter[field];
+        }
+        this.modelQuery = this.modelQuery.find(filter);
+        return this;
+    }
+    search(SearchableFields) {
+        const searchTerm = this.query.searchTerm || "";
+        const searchArray = SearchableFields.map((field) => ({
+            [field]: { $regex: searchTerm, $options: "i" },
+        }));
+        const searchQuery = {
+            $or: searchArray,
+        };
+        this.modelQuery = this.modelQuery.find(searchQuery);
+        return this;
+    }
+    sort() {
+        const sort = this.query.sort || "-createdAt";
+        this.modelQuery = this.modelQuery.sort(sort);
+        return this;
+    }
+    fields() {
+        const fields = this.query.fields
+            ? this.query.fields.split(",").join(" ")
+            : "";
+        this.modelQuery = this.modelQuery.select(fields);
+        return this;
+    }
+    paginate() {
+        const limit = Number(this.query.limit) || 10;
+        const page = Number(this.query.page) || 1;
+        const skip = (page - 1) * limit;
+        this.modelQuery = this.modelQuery.skip(skip).limit(limit);
+        return this;
+    }
+    build() {
+        return this.modelQuery;
+    }
+    getMeta() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const filterQuery = this.modelQuery.getQuery();
+            const totalDocuments = yield this.modelQuery.model.countDocuments(filterQuery);
+            const limit = Number(this.query.limit) || 10;
+            const page = Number(this.query.page) || 1;
+            const totalPage = Math.ceil(totalDocuments / limit);
+            return {
+                page,
+                limit,
+                total: totalDocuments,
+                totalPage,
+            };
+        });
+    }
+}
+exports.QueryBuilder = QueryBuilder;
