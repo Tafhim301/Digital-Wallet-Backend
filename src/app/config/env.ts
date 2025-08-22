@@ -13,6 +13,7 @@ interface EnvConfig {
   BCRYPT_SALT_ROUND: number;
   ADMIN_PHONE: string;
   ADMIN_PASSWORD: string;
+  FRONTEND_URL : string;
 }
 
 const loadEnvVariables = (): EnvConfig => {
@@ -27,6 +28,7 @@ const loadEnvVariables = (): EnvConfig => {
     "BCRYPT_SALT_ROUND",
     "ADMIN_PHONE",
     "ADMIN_PASSWORD",
+    "FRONTEND_URL"
   ];
   requiredEnvVAriables.forEach((key) => {
     if (!process.env[key]) {
@@ -45,6 +47,7 @@ const loadEnvVariables = (): EnvConfig => {
     BCRYPT_SALT_ROUND: Number(process.env.BCRYPT_SALT_ROUND as string),
     ADMIN_PHONE: process.env.ADMIN_PHONE as string,
     ADMIN_PASSWORD: process.env.ADMIN_PASSWORD as string,
+    FRONTEND_URL : process.env.FRONTEND_URL as string
   };
 };
 
