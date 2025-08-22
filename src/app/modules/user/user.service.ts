@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { envVars } from "../../config/env";
 import AppError from "../../errorHandlers/appError";
 import { QueryBuilder } from "../../utils/queryBuilder";
@@ -7,42 +8,69 @@ import { IUser, Role } from "./user.interface";
 import { User } from "./user.model";
 import bcryptjs from "bcryptjs";
 import httpStatus from "http-status-codes";
+import { createUserTokens } from "../../utils/userTokens";
 
 const createUser = async (payload: Partial<IUser>) => {
   const { name, phone, password, ...rest } = payload;
 
-  const doesUserExist = await User.findOne({ phone });
-  if (doesUserExist) {
-    throw new AppError(httpStatus.BAD_REQUEST, "User already exists");
-  }
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-  const hashedPassword = await bcryptjs.hash(
-    password as string,
-    Number(envVars.BCRYPT_SALT_ROUND)
-  );
+  try {
+
+    const doesUserExist = await User.findOne({ phone }).session(session);
+    if (doesUserExist) {
+      throw new AppError(httpStatus.BAD_REQUEST, "User already exists");
+    }
+
+
+    const hashedPassword = await bcryptjs.hash(
+      password as string,
+      Number(envVars.BCRYPT_SALT_ROUND)
+    );
+
+ 
+    const user = await User.create(
+      [
+        {
+          name,
+          phone,
+          password: hashedPassword,
+          ...rest,
+        },
+      ],
+      { session }
+    );
 
   
-  const user = await User.create({
-    name,
-    phone,
-    password: hashedPassword,
-    ...rest, 
-  });
+    const wallet = await Wallet.create(
+      [
+        {
+          user: user[0]._id,
+        },
+      ],
+      { session }
+    );
 
-  const wallet = await Wallet.create({
-    user: user._id,
-  });
+    user[0].wallet = wallet[0]._id;
+    await user[0].save({ session });
 
-  user.wallet = wallet._id;
-  await user.save(); 
+    await session.commitTransaction();
+    session.endSession();
 
-  return { user, wallet };
+     const accessToken = createUserTokens(user[0]);
+
+    return { user: user[0], wallet: wallet[0] , accessToken : accessToken};
+  } catch (error) {
+  
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
 };
 
-
-
 const getAllUsers = async (query: Record<string, string>) => {
-  const queryBuilder = new QueryBuilder(User.find({role : Role.USER  }), query);
+  const queryBuilder = new QueryBuilder(User.find({ role: Role.USER }), query);
 
   const users = await queryBuilder
     .search(userSearchableFields)
@@ -58,11 +86,23 @@ const getAllUsers = async (query: Record<string, string>) => {
 
   return { meta: meta, data: data };
 };
+const getMe = async (userId : string) => {
+
+  const user = await User.findById(userId);
+  if(!user){
+    throw new AppError(404,"User Not Found");
+  };
+
+  return user
+
+
+
+   
+ 
+};
 
 export const userServices = {
   createUser,
-  getAllUsers
-}
-
-
-
+  getAllUsers,
+  getMe
+};
