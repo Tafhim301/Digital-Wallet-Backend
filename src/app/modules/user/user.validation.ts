@@ -20,4 +20,8 @@ export const createUserZodSchema = z.object({
     .refine((val) => /\d/.test(val), {
       message: "Password must contain at least one number",
     }),
+
+  role : z.string()
+
+    
 });
