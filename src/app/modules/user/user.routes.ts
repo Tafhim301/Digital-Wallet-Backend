@@ -24,6 +24,12 @@ router.get(
 
   userController.getMe
 );
+router.post(
+  "/checkPassword",
+  checkAuth(...Object.values(Role)),
+
+  userController.checkPassword
+);
 
 
 export const userRoutes = router;

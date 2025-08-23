@@ -98,9 +98,26 @@ const getMe = async (userId: string) => {
 
   return user;
 };
+const checkPassword = async (userId: string, password: string) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new AppError(404, "User Not Found");
+  }
+
+  const matchedPassword = await bcryptjs.compare(
+    password,
+    user?.password as string
+  );
+  if (!matchedPassword) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Password doesn't Match");
+  }
+
+  return user;
+};
 
 export const userServices = {
   createUser,
   getAllUsers,
   getMe,
+  checkPassword,
 };

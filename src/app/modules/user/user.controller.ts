@@ -8,33 +8,43 @@ import { setAuthCookie } from "../../utils/setCookies";
 
 const createUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    
-    
     const result = await userServices.createUser(req.body);
-    setAuthCookie(res,result.accessToken)
+    setAuthCookie(res, result.accessToken);
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.OK,
       message: "User created successfully",
-      data: result
-      
+      data: result,
     });
   }
 );
 
 const getMe = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.user.userId
+    const userId = req.user.userId;
 
-    
-    const result = await userServices.getMe(userId);  
-  
+    const result = await userServices.getMe(userId);
+
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.OK,
       message: "User retrieved successfully",
-      data: result
-      
+      data: result,
+    });
+  }
+);
+const checkPassword = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.user.userId;
+    const password = req.body.password;
+
+    const result = await userServices.checkPassword(userId, password);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "User retrieved successfully",
+      data: result,
     });
   }
 );
@@ -55,10 +65,9 @@ const getAllUsers = catchAsync(
   }
 );
 
-
-
 export const userController = {
-    createUser,
-    getAllUsers,
-    getMe
-}
+  createUser,
+  getAllUsers,
+  getMe,
+  checkPassword
+};
