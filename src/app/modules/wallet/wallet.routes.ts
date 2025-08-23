@@ -6,6 +6,7 @@ import { walletController } from "./wallet.controller";
 const router = Router();
 
 router.get("/", checkAuth(Role.ADMIN), walletController.getAllWallets);
+router.get("/my-wallet", checkAuth(...Object.values(Role)), walletController.myWallet);
 router.patch("/block-wallet/:id", checkAuth(Role.ADMIN), walletController.blockWallet);
 
 export const walletRoutes = router;

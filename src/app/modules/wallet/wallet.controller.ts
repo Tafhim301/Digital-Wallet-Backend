@@ -20,6 +20,19 @@ const getAllWallets = catchAsync(
     });
   }
 );
+const myWallet = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.user.userId;
+    const result = await walletServices.myWallet(userId);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Wallet retrieved successfully",
+      data: result,
+
+    });
+  }
+);
 const blockWallet = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const result = await walletServices.blockWallet(req.params.id);
@@ -35,4 +48,5 @@ const blockWallet = catchAsync(
 export const walletController = {
   getAllWallets,
   blockWallet,
+  myWallet
 };
