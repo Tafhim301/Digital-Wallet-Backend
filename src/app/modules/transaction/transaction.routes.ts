@@ -14,6 +14,11 @@ router.post(
   transactionController.sendMoney
 );
 router.post(
+  "/cash-out-by-agent",
+  checkAuth(Role.AGENT),
+  transactionController.cashOutByAgent
+);
+router.post(
   "/cash-in",
   checkAuth(Role.AGENT),
   validateRequest(createTransactionSchema),

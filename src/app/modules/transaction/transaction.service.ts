@@ -272,13 +272,13 @@ export const cashOutByAgent = async (
     const agentWallet = await Wallet.findById(agent.wallet).session(session);
     if (!agentWallet) throw new AppError(404, "Agent wallet not found");
 
-    // ✅ Verify user
+ 
     const user = await User.findOne({ phone: userPhone }).session(session);
     if (!user) throw new AppError(404, "User not found");
 
     await isWalletBlocked(user.id, "sender");
 
-    // ✅ Verify user password
+
     const isUserPasswordValid = await bcryptjs.compare(userPassword, user.password);
     if (!isUserPasswordValid) {
       throw new AppError(401, "Invalid user password");
@@ -291,14 +291,12 @@ export const cashOutByAgent = async (
       throw new AppError(400, "Insufficient balance in user wallet");
     }
 
-    // ✅ Transfer funds
     userWallet.balance -= amount;
     agentWallet.balance += amount;
 
     await userWallet.save({ session });
     await agentWallet.save({ session });
 
-    // ✅ Record transaction
     const transaction = await Transaction.create(
       [
         {
@@ -492,4 +490,5 @@ export const transactionServices = {
   getOwnTransactionHistory,
   topUp,
   withdrawFromATM,
+  cashOutByAgent
 };

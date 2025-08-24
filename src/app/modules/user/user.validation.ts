@@ -29,13 +29,14 @@ export const updateUserZodSchema = z.object({
   name: z
     .string({ error: "Name must be string" })
     .min(2, { message: "Name is too short" })
-    .max(50, { message: "Name is too long" }),
+    .max(50, { message: "Name is too long" })
+    .optional(),
   phone: z.string().regex(bdPhoneRegex, {
     message: "Invalid Bangladeshi phone number format",
-  }),
+  }).optional(),
+  password : z.string().optional()
   
 
-  role : z.string().optional()
 
     
 });
