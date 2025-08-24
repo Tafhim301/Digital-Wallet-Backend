@@ -33,17 +33,34 @@ const getMe = catchAsync(
     });
   }
 );
+const updateProfile = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.user.userId;
+    const payload = req.body
+
+    const result = await userServices.updateProfile(userId,payload);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "User updated successfully",
+      data: result,
+    });
+  }
+);
 const checkPassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user.userId;
     const password = req.body.password;
+
+ 
 
     const result = await userServices.checkPassword(userId, password);
 
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.OK,
-      message: "User retrieved successfully",
+      message: "Password Validation Completed",
       data: result,
     });
   }
@@ -69,5 +86,6 @@ export const userController = {
   createUser,
   getAllUsers,
   getMe,
-  checkPassword
+  checkPassword,
+  updateProfile
 };

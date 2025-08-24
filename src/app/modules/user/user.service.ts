@@ -98,6 +98,16 @@ const getMe = async (userId: string) => {
 
   return user;
 };
+const updateProfile = async (userId: string, payload: Partial<IUser>) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new AppError(404, "User Not Found");
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(userId, payload,{new : true , runValidators : true});
+
+  return updatedUser;
+};
 const checkPassword = async (userId: string, password: string) => {
   const user = await User.findById(userId);
   if (!user) {
@@ -120,4 +130,5 @@ export const userServices = {
   getAllUsers,
   getMe,
   checkPassword,
+  updateProfile,
 };

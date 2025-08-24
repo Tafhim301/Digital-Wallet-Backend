@@ -1,4 +1,5 @@
 import { Response } from "express";
+const tenDays = 10 * 24 * 60 * 60 * 1000
 
 
 export interface AuthTokens {
@@ -12,6 +13,7 @@ export const setAuthCookie = (res: Response, tokenInfo: AuthTokens) => {
       httpOnly: true,
       secure: true,
       sameSite: "none",
+      expires :  new Date(Date.now() + tenDays)
     });
   }
 
@@ -20,6 +22,7 @@ export const setAuthCookie = (res: Response, tokenInfo: AuthTokens) => {
       httpOnly: true,
       secure: true,
       sameSite: "none",
+            expires :  new Date(Date.now() + tenDays * 3)
     });
   }
 };

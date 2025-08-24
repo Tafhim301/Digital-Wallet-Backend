@@ -21,7 +21,21 @@ export const createUserZodSchema = z.object({
       message: "Password must contain at least one number",
     }),
 
-  role : z.string()
+  role : z.string().optional()
+
+    
+});
+export const updateUserZodSchema = z.object({
+  name: z
+    .string({ error: "Name must be string" })
+    .min(2, { message: "Name is too short" })
+    .max(50, { message: "Name is too long" }),
+  phone: z.string().regex(bdPhoneRegex, {
+    message: "Invalid Bangladeshi phone number format",
+  }),
+  
+
+  role : z.string().optional()
 
     
 });

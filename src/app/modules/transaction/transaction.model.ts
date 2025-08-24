@@ -4,7 +4,7 @@ import { ITransaction, Status, TransactionType } from "./transaction.interface";
 const transactionSchema = new Schema<ITransaction>(
   {
     sender: { type: Schema.Types.ObjectId ,ref : "User" },
-    receiver: { type: Schema.Types.Mixed },
+    receiver: { type: Schema.Types.ObjectId, ref : "User" },
     amount: {
       type: Number,
       min: [1, "Amount must be getter  than 0"],
