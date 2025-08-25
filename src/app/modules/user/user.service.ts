@@ -104,7 +104,19 @@ const updateProfile = async (userId: string, payload: Partial<IUser>) => {
     throw new AppError(404, "User Not Found");
   }
 
-  const updatedUser = await User.findByIdAndUpdate(userId, payload,{new : true , runValidators : true});
+  if (payload.password) {
+    const hashedPassword = await bcryptjs.hash(
+      payload.password as string,
+      Number(envVars.BCRYPT_SALT_ROUND)
+    );
+
+    payload.password = hashedPassword;
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(userId, payload, {
+    new: true,
+    runValidators: true,
+  });
 
   return updatedUser;
 };

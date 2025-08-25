@@ -46,9 +46,9 @@ const blockWallet = async (id: string) => {
 
 
 export const getWalletSummary = async (userId: string) => {
- 
   const uid = new mongoose.Types.ObjectId(userId);
 
+  // --- Transaction Summary Totals ---
   const summary = await Transaction.aggregate([
     {
       $match: {
@@ -58,8 +58,6 @@ export const getWalletSummary = async (userId: string) => {
     {
       $group: {
         _id: null,
-
-      
         cashInTotal: {
           $sum: {
             $cond: [
@@ -74,8 +72,6 @@ export const getWalletSummary = async (userId: string) => {
             ],
           },
         },
-
-          
         cashOutTotal: {
           $sum: {
             $cond: [
@@ -90,7 +86,6 @@ export const getWalletSummary = async (userId: string) => {
             ],
           },
         },
-      
         sendMoneyTotal: {
           $sum: {
             $cond: [
@@ -105,31 +100,19 @@ export const getWalletSummary = async (userId: string) => {
             ],
           },
         },
-
         topUpTotal: {
           $sum: {
             $cond: [
-              {
-                $and: [
-                  { $eq: ["$transactionType", TransactionType.TOP_UP] },
-                  { $eq: ["$sender", uid] },
-                ],
-              },
+              { $and: [{ $eq: ["$transactionType", TransactionType.TOP_UP] }, { $eq: ["$sender", uid] }] },
               "$amount",
               0,
             ],
           },
         },
-
         withdrawTotal: {
           $sum: {
             $cond: [
-              {
-                $and: [
-                  { $eq: ["$transactionType", TransactionType.WITHDRAW] },
-                  { $eq: ["$sender", uid] },
-                ],
-              },
+              { $and: [{ $eq: ["$transactionType", TransactionType.WITHDRAW] }, { $eq: ["$sender", uid] }] },
               "$amount",
               0,
             ],
@@ -139,15 +122,62 @@ export const getWalletSummary = async (userId: string) => {
     },
   ]);
 
-  return summary[0] || {
- 
-    cashInTotal: 0,
-    cashOutTotal: 0,
-    sendMoneyTotal: 0,
-    topUpTotal: 0,
-    withdrawTotal: 0,
+
+  const trends = await Transaction.aggregate([
+    {
+      $match: {
+        $or: [{ sender: uid }, { receiver: uid }],
+      },
+    },
+    {
+      $group: {
+        _id: {
+          week: { $week: "$createdAt" },
+          year: { $year: "$createdAt" },
+        },
+        cashIn: {
+          $sum: {
+            $cond: [
+              { $eq: ["$transactionType", TransactionType.CASH_IN] },
+              "$amount",
+              0,
+            ],
+          },
+        },
+        cashOut: {
+          $sum: {
+            $cond: [
+              { $eq: ["$transactionType", TransactionType.CASH_OUT] },
+              "$amount",
+              0,
+            ],
+          },
+        },
+      },
+    },
+    {
+      $sort: { "_id.year": -1, "_id.week": -1 },
+    },
+  ]);
+
+  const formattedTrends = trends.map((t) => ({
+    name: `W${t._id.week}`,
+    "Cash In": t.cashIn,
+    "Cash Out": t.cashOut,
+  }));
+
+  return {
+    summary: summary[0] || {
+      cashInTotal: 0,
+      cashOutTotal: 0,
+      sendMoneyTotal: 0,
+      topUpTotal: 0,
+      withdrawTotal: 0,
+    },
+    trends: formattedTrends,
   };
 };
+
 
 export const walletServices = {
   getAllWallets,
