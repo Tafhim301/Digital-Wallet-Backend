@@ -74,7 +74,7 @@ const createUser = async (payload: Partial<IUser>) => {
 };
 
 const getAllUsers = async (query: Record<string, string>) => {
-  const queryBuilder = new QueryBuilder(User.find({ role: Role.USER }), query);
+  const queryBuilder = new QueryBuilder(User.find({ role: Role.USER }).populate("wallet"), query);
 
   const users = await queryBuilder
     .search(userSearchableFields)

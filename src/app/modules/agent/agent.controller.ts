@@ -8,8 +8,8 @@ import { sendResponse } from "../../utils/sendResponse";
 
 const agentApplication = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    
-    const result = await agentServices.agentApplication(req.body);
+    const userId = req.user.userId
+    const result = await agentServices.agentApplication(userId);
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.OK,
@@ -39,6 +39,18 @@ const approveAgent = catchAsync(
       success: true,
       statusCode: httpStatus.OK,
       message: "Agent Application approved successfully",
+      data: result
+      
+    });
+  }
+);
+const rejectAgent = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await agentServices.rejectAgent(req.params.id);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Agent Application rejected",
       data: result
       
     });
@@ -94,5 +106,6 @@ export const agentController = {
     approveAgent,
     getAllAgents,
     suspendAgent,
-    CashInAgent
+    CashInAgent,
+    rejectAgent
 }

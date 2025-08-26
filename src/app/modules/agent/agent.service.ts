@@ -1,5 +1,5 @@
 import AppError from "../../errorHandlers/appError";
-import { ApprovalStatus, IUser, Role } from "../user/user.interface";
+import { ApprovalStatus, Role } from "../user/user.interface";
 import httpStatus from "http-status-codes";
 import { User } from "../user/user.model";
 import { QueryBuilder } from "../../utils/queryBuilder";
@@ -10,20 +10,25 @@ import { isWalletBlocked } from "../../utils/checkTransactionValidity";
 import mongoose from "mongoose";
 import { Transaction } from "../transaction/transaction.model";
 
-const agentApplication = async (payload: Partial<IUser>) => {
-  const { phone } = payload;
-  if (!phone) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      "Phone number is required for agent application"
-    );
-  }
+const agentApplication = async (userId : string) => {
 
-  const user = await User.findOne({ phone });
+  const user = await User.findById(userId);
   if (!user) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
       "User Does Not Exist. You Must Register As An User To Apply For Agent"
+    );
+  }
+  if (user.role === Role.AGENT) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "You Are Already An Agent"
+    );
+  }
+  if (user.approvalStatus === ApprovalStatus.PENDING) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "You have already applied for agent role"
     );
   }
 
@@ -60,7 +65,7 @@ const getAgentApplications = async (query: Record<string, string>) => {
   return { meta: meta, data: data };
 };
 const getAllAgents = async (query: Record<string, string>) => {
-  const queryBuilder = new QueryBuilder(User.find({ role: Role.AGENT }), query);
+  const queryBuilder = new QueryBuilder(User.find({ role: Role.AGENT }).populate('wallet'), query);
 
   const users = await queryBuilder
     .search(agentSearchableFields)
@@ -94,11 +99,28 @@ const approveAgent = async (id: string) => {
     isAgent: approvedAgent?.isAgent,
   };
 };
+const rejectAgent = async (id: string) => {
+  const rejectedAgent = await User.findByIdAndUpdate(
+    id,
+    {
+      role: Role.USER,
+      approvalStatus: ApprovalStatus.UNAPPLIED,
+      isAgent: false,
+    },
+    { new: true }
+  );
+
+  return {
+    role: rejectedAgent?.role,
+    ApprovalStatus: rejectedAgent?.approvalStatus,
+    isAgent: rejectedAgent?.isAgent,
+  };
+};
 const suspendAgent = async (id: string) => {
   const suspendedAgent = await User.findByIdAndUpdate(
     id,
     {
-      role: Role.USER,
+      role: Role.AGENT,
       approvalStatus: ApprovalStatus.SUSPENDED,
       isAgent: false,
     },
@@ -111,6 +133,8 @@ const suspendAgent = async (id: string) => {
     isAgent: suspendedAgent?.isAgent,
   };
 };
+
+
 const cashInAgent = async (agentId: string, payload: Partial<ITransaction>) => {
   const { amount } = payload;
 
@@ -181,5 +205,7 @@ export const agentServices = {
   approveAgent,
   getAllAgents,
   suspendAgent,
-  cashInAgent
+  cashInAgent,
+  rejectAgent
+ 
 };

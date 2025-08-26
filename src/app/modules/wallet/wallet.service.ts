@@ -31,12 +31,14 @@ const myWallet = async (userId: string) => {
 
 const blockWallet = async (id: string) => {
   const wallet = await Wallet.findById(id);
+  
   if (!wallet) {
     throw new AppError(404, "Wallet Not Found");
   }
+  const isWalletBlocked = wallet.isBlocked
   const updatedWallet = await Wallet.findByIdAndUpdate(
     id,
-    { isBlocked: true },
+    { isBlocked: !isWalletBlocked },
     { new: true }
   );
 
@@ -48,7 +50,7 @@ const blockWallet = async (id: string) => {
 export const getWalletSummary = async (userId: string) => {
   const uid = new mongoose.Types.ObjectId(userId);
 
-  // --- Transaction Summary Totals ---
+ 
   const summary = await Transaction.aggregate([
     {
       $match: {

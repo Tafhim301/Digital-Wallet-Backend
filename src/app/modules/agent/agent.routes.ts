@@ -5,7 +5,7 @@ import { agentController } from "./agent.controller";
 
 const router = Router();
 
-router.post(
+router.patch(
   "/agent-application",
   checkAuth(Role.USER),
   agentController.agentApplication
@@ -25,6 +25,11 @@ router.patch(
   "/suspend-agent/:id",
   checkAuth(Role.ADMIN),
   agentController.suspendAgent
+);
+router.patch(
+  "/reject-agent/:id",
+  checkAuth(Role.ADMIN),
+  agentController.rejectAgent
 );
 router.post(
   "/cash-in-agent/:id",
