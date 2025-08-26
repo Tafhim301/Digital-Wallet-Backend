@@ -32,7 +32,7 @@ router.patch(
   agentController.rejectAgent
 );
 router.post(
-  "/cash-in-agent/:id",
+  "/cash-in-agent/",
   checkAuth(Role.ADMIN),
   agentController.CashInAgent
 );

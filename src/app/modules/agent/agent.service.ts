@@ -1,10 +1,10 @@
 import AppError from "../../errorHandlers/appError";
-import { ApprovalStatus, Role } from "../user/user.interface";
+import { ApprovalStatus,  Role } from "../user/user.interface";
 import httpStatus from "http-status-codes";
 import { User } from "../user/user.model";
 import { QueryBuilder } from "../../utils/queryBuilder";
 import { agentSearchableFields } from "./agent.constant";
-import { ITransaction, TransactionType } from "../transaction/transaction.interface";
+import {  Status, TransactionType } from "../transaction/transaction.interface";
 import { Wallet } from "../wallet/wallet.model";
 import { isWalletBlocked } from "../../utils/checkTransactionValidity";
 import mongoose from "mongoose";
@@ -135,8 +135,8 @@ const suspendAgent = async (id: string) => {
 };
 
 
-const cashInAgent = async (agentId: string, payload: Partial<ITransaction>) => {
-  const { amount } = payload;
+const cashInAgent = async (payload: {receiver : string , amount : number}) => {
+  const { receiver ,amount } = payload;
 
 
   if (!amount) {
@@ -148,7 +148,7 @@ const cashInAgent = async (agentId: string, payload: Partial<ITransaction>) => {
   }
 
 
-  const agent = await User.findById(agentId);
+  const agent = await User.findOne({phone : receiver});
   if (!agent) {
     throw new AppError(httpStatus.NOT_FOUND, "Agent not found");
   }
@@ -177,10 +177,11 @@ const cashInAgent = async (agentId: string, payload: Partial<ITransaction>) => {
     await Transaction.create(
       [
         {
-          sender : "688a43cab99b963182ea5090",
-          receiever : agent._id,
+          sender : "68ac71d0b0a11c3378e793c6",
+          receiver : agent._id,
           amount : amount,
-          transactionType : TransactionType.ADMIN_CASH_IN
+          transactionType : TransactionType.ADMIN_CASH_IN,
+          status : Status.SUCCESSFUL
 
         },
       ],

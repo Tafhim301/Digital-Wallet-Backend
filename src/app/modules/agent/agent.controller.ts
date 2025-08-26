@@ -86,7 +86,7 @@ const getAllAgents = catchAsync(
 const CashInAgent = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
  
-    const result = await agentServices.cashInAgent(req.params.id,req.body);
+    const result = await agentServices.cashInAgent(req.body);
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.OK,
