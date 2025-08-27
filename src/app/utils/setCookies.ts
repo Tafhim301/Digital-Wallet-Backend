@@ -22,7 +22,7 @@ export const setAuthCookie = (res: Response, tokenInfo: AuthTokens) => {
       httpOnly: true,
       secure: true,
       sameSite: "none",
-            expires :  new Date(Date.now() + tenDays * 3)
+      expires :  new Date(Date.now() + tenDays * 3)
     });
   }
 };
