@@ -18,7 +18,8 @@ const http_status_codes_1 = __importDefault(require("http-status-codes"));
 const agent_service_1 = require("./agent.service");
 const sendResponse_1 = require("../../utils/sendResponse");
 const agentApplication = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield agent_service_1.agentServices.agentApplication(req.body);
+    const userId = req.user.userId;
+    const result = yield agent_service_1.agentServices.agentApplication(userId);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: http_status_codes_1.default.OK,
@@ -45,6 +46,15 @@ const approveAgent = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(
         data: result
     });
 }));
+const rejectAgent = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield agent_service_1.agentServices.rejectAgent(req.params.id);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: http_status_codes_1.default.OK,
+        message: "Agent Application rejected",
+        data: result
+    });
+}));
 const suspendAgent = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield agent_service_1.agentServices.suspendAgent(req.params.id);
     (0, sendResponse_1.sendResponse)(res, {
@@ -65,7 +75,7 @@ const getAllAgents = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(
     });
 }));
 const CashInAgent = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield agent_service_1.agentServices.cashInAgent(req.params.id, req.body);
+    const result = yield agent_service_1.agentServices.cashInAgent(req.body);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: http_status_codes_1.default.OK,
@@ -79,5 +89,6 @@ exports.agentController = {
     approveAgent,
     getAllAgents,
     suspendAgent,
-    CashInAgent
+    CashInAgent,
+    rejectAgent
 };

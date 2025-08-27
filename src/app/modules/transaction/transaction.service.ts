@@ -322,7 +322,7 @@ export const cashOutByAgent = async (
 
 
 const getAllTransactions = async (query: Record<string, string>) => {
-  const queryBuilder = new QueryBuilder(Transaction.find(), query);
+  const queryBuilder = new QueryBuilder(Transaction.find().populate('sender','name').populate("receiver",'name'), query);
 
   const users = await queryBuilder.filter().fields().sort().paginate();
 

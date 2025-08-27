@@ -25,16 +25,16 @@ export class QueryBuilder<T> {
 
   search(SearchableFields: string[]): this {
     const searchTerm = this.query.searchTerm || "";
+    const searchBy = this.query.searchBy || "";
+    const fields = searchBy ? [searchBy] : SearchableFields;
 
-    const searchArray = SearchableFields.map((field) => ({
+    const searchArray = fields.map((field) => ({
       [field]: { $regex: searchTerm, $options: "i" },
     }));
 
-    const searchQuery = {
-      $or: searchArray,
-    };
-
-    this.modelQuery = this.modelQuery.find(searchQuery);
+    if (searchArray.length > 0) {
+      this.modelQuery = this.modelQuery.find({ $or: searchArray });
+    }
 
     return this;
   }

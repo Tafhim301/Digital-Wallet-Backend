@@ -47,6 +47,17 @@ const cashout = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 
         data: result,
     });
 }));
+const cashOutByAgent = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userToken = req.user;
+    const { userPhone, userPassword, agentPassword, amount } = req.body;
+    const result = yield transaction_service_1.transactionServices.cashOutByAgent(userToken, userPhone, userPassword, agentPassword, amount);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: http_status_codes_1.default.OK,
+        message: "Cash-out successfull",
+        data: result,
+    });
+}));
 const getAllTransactions = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const query = req.query;
     const result = yield transaction_service_1.transactionServices.getAllTransactions(query);
@@ -95,5 +106,6 @@ exports.transactionController = {
     getAllTransactions,
     getOwnTransactionHistory,
     topUp,
-    withdrawFromATM
+    withdrawFromATM,
+    cashOutByAgent
 };

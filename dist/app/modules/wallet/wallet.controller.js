@@ -28,6 +28,26 @@ const getAllWallets = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter
         meta: result.meta,
     });
 }));
+const myWallet = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.user.userId;
+    const result = yield wallet_service_1.walletServices.myWallet(userId);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: http_status_codes_1.default.OK,
+        message: "Wallet retrieved successfully",
+        data: result,
+    });
+}));
+const getWalletSummary = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.user.userId;
+    const result = yield wallet_service_1.walletServices.getWalletSummary(userId);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: http_status_codes_1.default.OK,
+        message: "Wallet retrieved successfully",
+        data: result,
+    });
+}));
 const blockWallet = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield wallet_service_1.walletServices.blockWallet(req.params.id);
     (0, sendResponse_1.sendResponse)(res, {
@@ -40,4 +60,6 @@ const blockWallet = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(v
 exports.walletController = {
     getAllWallets,
     blockWallet,
+    myWallet,
+    getWalletSummary
 };

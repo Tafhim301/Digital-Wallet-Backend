@@ -24,14 +24,16 @@ const wallet_model_1 = require("../wallet/wallet.model");
 const checkTransactionValidity_1 = require("../../utils/checkTransactionValidity");
 const mongoose_1 = __importDefault(require("mongoose"));
 const transaction_model_1 = require("../transaction/transaction.model");
-const agentApplication = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const { phone } = payload;
-    if (!phone) {
-        throw new appError_1.default(http_status_codes_1.default.BAD_REQUEST, "Phone number is required for agent application");
-    }
-    const user = yield user_model_1.User.findOne({ phone });
+const agentApplication = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.User.findById(userId);
     if (!user) {
         throw new appError_1.default(http_status_codes_1.default.BAD_REQUEST, "User Does Not Exist. You Must Register As An User To Apply For Agent");
+    }
+    if (user.role === user_interface_1.Role.AGENT) {
+        throw new appError_1.default(http_status_codes_1.default.BAD_REQUEST, "You Are Already An Agent");
+    }
+    if (user.approvalStatus === user_interface_1.ApprovalStatus.PENDING) {
+        throw new appError_1.default(http_status_codes_1.default.BAD_REQUEST, "You have already applied for agent role");
     }
     const agent = yield user_model_1.User.findByIdAndUpdate(user === null || user === void 0 ? void 0 : user._id, {
         approvalStatus: user_interface_1.ApprovalStatus.PENDING,
@@ -55,7 +57,7 @@ const getAgentApplications = (query) => __awaiter(void 0, void 0, void 0, functi
     return { meta: meta, data: data };
 });
 const getAllAgents = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const queryBuilder = new queryBuilder_1.QueryBuilder(user_model_1.User.find({ role: user_interface_1.Role.AGENT }), query);
+    const queryBuilder = new queryBuilder_1.QueryBuilder(user_model_1.User.find({ role: user_interface_1.Role.AGENT }).populate('wallet'), query);
     const users = yield queryBuilder
         .search(agent_constant_1.agentSearchableFields)
         .filter()
@@ -80,9 +82,21 @@ const approveAgent = (id) => __awaiter(void 0, void 0, void 0, function* () {
         isAgent: approvedAgent === null || approvedAgent === void 0 ? void 0 : approvedAgent.isAgent,
     };
 });
+const rejectAgent = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const rejectedAgent = yield user_model_1.User.findByIdAndUpdate(id, {
+        role: user_interface_1.Role.USER,
+        approvalStatus: user_interface_1.ApprovalStatus.UNAPPLIED,
+        isAgent: false,
+    }, { new: true });
+    return {
+        role: rejectedAgent === null || rejectedAgent === void 0 ? void 0 : rejectedAgent.role,
+        ApprovalStatus: rejectedAgent === null || rejectedAgent === void 0 ? void 0 : rejectedAgent.approvalStatus,
+        isAgent: rejectedAgent === null || rejectedAgent === void 0 ? void 0 : rejectedAgent.isAgent,
+    };
+});
 const suspendAgent = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const suspendedAgent = yield user_model_1.User.findByIdAndUpdate(id, {
-        role: user_interface_1.Role.USER,
+        role: user_interface_1.Role.AGENT,
         approvalStatus: user_interface_1.ApprovalStatus.SUSPENDED,
         isAgent: false,
     }, { new: true });
@@ -92,15 +106,15 @@ const suspendAgent = (id) => __awaiter(void 0, void 0, void 0, function* () {
         isAgent: suspendedAgent === null || suspendedAgent === void 0 ? void 0 : suspendedAgent.isAgent,
     };
 });
-const cashInAgent = (agentId, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const { amount } = payload;
+const cashInAgent = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const { receiver, amount } = payload;
     if (!amount) {
         throw new appError_1.default(http_status_codes_1.default.BAD_REQUEST, "Amount is required");
     }
     if (typeof amount !== "number" || amount <= 0) {
         throw new appError_1.default(http_status_codes_1.default.BAD_REQUEST, "Amount must be a positive number");
     }
-    const agent = yield user_model_1.User.findById(agentId);
+    const agent = yield user_model_1.User.findOne({ phone: receiver });
     if (!agent) {
         throw new appError_1.default(http_status_codes_1.default.NOT_FOUND, "Agent not found");
     }
@@ -119,10 +133,11 @@ const cashInAgent = (agentId, payload) => __awaiter(void 0, void 0, void 0, func
         yield agentWallet.save({ session });
         yield transaction_model_1.Transaction.create([
             {
-                sender: "688a43cab99b963182ea5090",
-                receiever: agent._id,
+                sender: "68ac71d0b0a11c3378e793c6",
+                receiver: agent._id,
                 amount: amount,
-                transactionType: transaction_interface_1.TransactionType.ADMIN_CASH_IN
+                transactionType: transaction_interface_1.TransactionType.ADMIN_CASH_IN,
+                status: transaction_interface_1.Status.SUCCESSFUL
             },
         ], { session });
         yield session.commitTransaction();
@@ -141,5 +156,6 @@ exports.agentServices = {
     approveAgent,
     getAllAgents,
     suspendAgent,
-    cashInAgent
+    cashInAgent,
+    rejectAgent
 };

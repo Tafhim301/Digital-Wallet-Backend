@@ -5,7 +5,7 @@ const mongoose_1 = require("mongoose");
 const transaction_interface_1 = require("./transaction.interface");
 const transactionSchema = new mongoose_1.Schema({
     sender: { type: mongoose_1.Schema.Types.ObjectId, ref: "User" },
-    receiver: { type: mongoose_1.Schema.Types.Mixed },
+    receiver: { type: mongoose_1.Schema.Types.ObjectId, ref: "User" },
     amount: {
         type: Number,
         min: [1, "Amount must be getter  than 0"],

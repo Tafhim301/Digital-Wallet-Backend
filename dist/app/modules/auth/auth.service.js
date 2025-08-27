@@ -24,9 +24,9 @@ const login = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield (0, validatePasswordandSetCookie_1.validatePassword)(phone, password);
     return {
         user: result.user,
-        token: result.accessToken
+        token: result.accessToken,
     };
 });
 exports.authServices = {
-    login
+    login,
 };

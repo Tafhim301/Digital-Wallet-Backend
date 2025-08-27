@@ -9,6 +9,7 @@ const validateRequest_1 = require("../../middlewares/validateRequest");
 const transaction_validation_1 = require("./transaction.validation");
 const router = (0, express_1.Router)();
 router.post("/send-money", (0, checkAuth_1.checkAuth)(user_interface_1.Role.USER), (0, validateRequest_1.validateRequest)(transaction_validation_1.createTransactionSchema), transaction_controller_1.transactionController.sendMoney);
+router.post("/cash-out-by-agent", (0, checkAuth_1.checkAuth)(user_interface_1.Role.AGENT), transaction_controller_1.transactionController.cashOutByAgent);
 router.post("/cash-in", (0, checkAuth_1.checkAuth)(user_interface_1.Role.AGENT), (0, validateRequest_1.validateRequest)(transaction_validation_1.createTransactionSchema), transaction_controller_1.transactionController.cashIn);
 router.post("/cash-out", (0, checkAuth_1.checkAuth)(user_interface_1.Role.USER), (0, validateRequest_1.validateRequest)(transaction_validation_1.createTransactionSchema), transaction_controller_1.transactionController.cashout);
 router.post("/top-up", (0, checkAuth_1.checkAuth)(user_interface_1.Role.USER), transaction_controller_1.transactionController.topUp);

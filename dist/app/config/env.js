@@ -18,6 +18,7 @@ const loadEnvVariables = () => {
         "BCRYPT_SALT_ROUND",
         "ADMIN_PHONE",
         "ADMIN_PASSWORD",
+        "FRONTEND_URL"
     ];
     requiredEnvVAriables.forEach((key) => {
         if (!process.env[key]) {
@@ -35,6 +36,7 @@ const loadEnvVariables = () => {
         BCRYPT_SALT_ROUND: Number(process.env.BCRYPT_SALT_ROUND),
         ADMIN_PHONE: process.env.ADMIN_PHONE,
         ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
+        FRONTEND_URL: process.env.FRONTEND_URL
     };
 };
 exports.envVars = loadEnvVariables();

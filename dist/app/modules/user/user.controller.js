@@ -17,13 +17,47 @@ const user_service_1 = require("./user.service");
 const sendResponse_1 = require("../../utils/sendResponse");
 const catchAsync_1 = require("../../utils/catchAsync");
 const http_status_codes_1 = __importDefault(require("http-status-codes"));
+const setCookies_1 = require("../../utils/setCookies");
 const createUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield user_service_1.userServices.createUser(req.body);
+    (0, setCookies_1.setAuthCookie)(res, result.accessToken);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: http_status_codes_1.default.OK,
         message: "User created successfully",
-        data: result
+        data: result,
+    });
+}));
+const getMe = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.user.userId;
+    const result = yield user_service_1.userServices.getMe(userId);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: http_status_codes_1.default.OK,
+        message: "User retrieved successfully",
+        data: result,
+    });
+}));
+const updateProfile = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.user.userId;
+    const payload = req.body;
+    const result = yield user_service_1.userServices.updateProfile(userId, payload);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: http_status_codes_1.default.OK,
+        message: "User updated successfully",
+        data: result,
+    });
+}));
+const checkPassword = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.user.userId;
+    const password = req.body.password;
+    const result = yield user_service_1.userServices.checkPassword(userId, password);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: http_status_codes_1.default.OK,
+        message: "Password Validation Completed",
+        data: result,
     });
 }));
 const getAllUsers = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -39,5 +73,8 @@ const getAllUsers = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(v
 }));
 exports.userController = {
     createUser,
-    getAllUsers
+    getAllUsers,
+    getMe,
+    checkPassword,
+    updateProfile
 };
