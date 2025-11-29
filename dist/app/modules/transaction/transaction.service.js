@@ -251,7 +251,7 @@ const cashOutByAgent = (agentToken, userPhone, userPassword, agentPassword, amou
 });
 exports.cashOutByAgent = cashOutByAgent;
 const getAllTransactions = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const queryBuilder = new queryBuilder_1.QueryBuilder(transaction_model_1.Transaction.find(), query);
+    const queryBuilder = new queryBuilder_1.QueryBuilder(transaction_model_1.Transaction.find().populate('sender', 'name').populate("receiver", 'name'), query);
     const users = yield queryBuilder.filter().fields().sort().paginate();
     const [data, meta] = yield Promise.all([
         users.build(),
